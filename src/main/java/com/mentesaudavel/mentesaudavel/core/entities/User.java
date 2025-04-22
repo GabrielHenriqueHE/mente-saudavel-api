@@ -5,6 +5,7 @@ import com.mentesaudavel.mentesaudavel.core.enums.UserStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -48,6 +49,7 @@ public class User implements Serializable {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     public User(String email, String password) {
