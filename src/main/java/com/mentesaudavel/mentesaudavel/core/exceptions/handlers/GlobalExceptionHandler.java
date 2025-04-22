@@ -2,6 +2,7 @@ package com.mentesaudavel.mentesaudavel.core.exceptions.handlers;
 
 import com.mentesaudavel.mentesaudavel.core.dto.out.ErrorResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.exceptions.BadRequestException;
+import com.mentesaudavel.mentesaudavel.core.exceptions.ResourceNotFoundException;
 import com.mentesaudavel.mentesaudavel.core.exceptions.UnprocessableEntityException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,17 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorResponse);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO<Void>> handleResourceNotFoundException(ResourceNotFoundException e) {
+        ErrorResponseDTO<Void> errorResponse = new ErrorResponseDTO<>(
+                HttpStatus.NOT_FOUND.value(),
+                e.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
