@@ -1,9 +1,10 @@
 package com.mentesaudavel.mentesaudavel.core.services;
 
-import com.mentesaudavel.mentesaudavel.core.dto.in.UserRegisterDTO;
-import com.mentesaudavel.mentesaudavel.core.dto.out.UserRegisterResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.in.UserCreateRequestDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.UserCreateResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.entities.User;
 import com.mentesaudavel.mentesaudavel.core.exceptions.UnprocessableEntityException;
+import com.mentesaudavel.mentesaudavel.core.mappers.UserMapper;
 import com.mentesaudavel.mentesaudavel.core.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class AuthService {
     private UserRepository userRepository;
 
 
-    public UserRegisterResponseDTO registerUser(UserRegisterDTO dto) {
+    public UserCreateResponseDTO registerUser(UserCreateRequestDTO dto) {
         Optional<User> userExists = this.userRepository
                 .findByEmail(dto.email().toLowerCase());
 
@@ -34,16 +35,6 @@ public class AuthService {
 
         var createdUser = this.userRepository.save(user);
 
-        return this.redirectAfterRegistration(createdUser);
+        return UserMapper.entityToDTO(createdUser);
     }
-
-    private UserRegisterResponseDTO redirectAfterRegistration(User user) {
-        URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/psicologos/criar-perfil").build().toUri();
-
-        return new UserRegisterResponseDTO(
-                user.getId(),
-                uri
-        );
-    }
-
 }
