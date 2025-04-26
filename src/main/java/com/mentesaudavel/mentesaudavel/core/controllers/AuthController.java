@@ -1,17 +1,24 @@
 package com.mentesaudavel.mentesaudavel.core.controllers;
 
-import com.mentesaudavel.mentesaudavel.core.dto.in.UserRegisterDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.in.UserCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.AppResponse;
-import com.mentesaudavel.mentesaudavel.core.dto.out.UserRegisterResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.LinkResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.UserCreateResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.helpers.LinkHelper;
 import com.mentesaudavel.mentesaudavel.core.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,15 +28,19 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    private ResponseEntity<AppResponse<UserRegisterResponseDTO>> registerUser(
-            @RequestBody @Valid UserRegisterDTO dto
+    private ResponseEntity<AppResponse<UserCreateResponseDTO>> registerUser(
+            @RequestBody @Valid UserCreateRequestDTO dto
     ) {
-        UserRegisterResponseDTO serviceResponse = this.authService.registerUser(dto);
+        UserCreateResponseDTO serviceResponse = this.authService.registerUser(dto);
 
-        AppResponse<UserRegisterResponseDTO> response = new AppResponse<>(
+        Map<String, LinkResponseDTO> links = new HashMap<>();
+        links.put("psychologists", LinkHelper.link("/api/psychologists/create", HttpMethod.POST));
+
+        AppResponse<UserCreateResponseDTO> response = new AppResponse<>(
                 HttpStatus.CREATED.value(),
                 "User created successfully",
-                serviceResponse
+                serviceResponse,
+                links
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

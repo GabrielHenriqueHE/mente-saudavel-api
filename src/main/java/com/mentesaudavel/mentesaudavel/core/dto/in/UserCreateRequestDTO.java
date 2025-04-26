@@ -2,7 +2,7 @@ package com.mentesaudavel.mentesaudavel.core.dto.in;
 
 import jakarta.validation.constraints.*;
 
-public record UserRegisterDTO(
+public record UserCreateRequestDTO(
         @NotBlank(message = "Email is required.")
         @Email(message = "Email must be valid.")
         String email,
