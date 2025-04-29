@@ -8,9 +8,7 @@ import com.mentesaudavel.mentesaudavel.core.mappers.UserMapper;
 import com.mentesaudavel.mentesaudavel.core.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Optional;
 
 @Service
