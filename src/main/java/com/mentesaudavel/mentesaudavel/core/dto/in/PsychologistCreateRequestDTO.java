@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-public record PsychologistCreateDTO(
+public record PsychologistCreateRequestDTO(
         @NotBlank(message = "Name is required.")
         @Size(max = 100, message = "Name must be at most 100 characters.")
         String name,
