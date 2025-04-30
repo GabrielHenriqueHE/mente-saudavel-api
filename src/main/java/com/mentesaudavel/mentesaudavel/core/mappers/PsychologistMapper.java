@@ -10,6 +10,7 @@ public class PsychologistMapper {
                 psychologist.getId(),
                 psychologist.getName(),
                 psychologist.getCrp(),
+                psychologist.getAbout(),
                 psychologist.getBirthDate(),
                 psychologist.getActivitiesStartDate()
         );

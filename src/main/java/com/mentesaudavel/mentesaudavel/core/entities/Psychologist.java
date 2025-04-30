@@ -41,6 +41,10 @@ public class Psychologist implements Serializable {
     @Column(name = "activities_start_date", nullable = false)
     private LocalDate activitiesStartDate;
 
+    @Column(name = "about")
+    @Lob
+    private String about;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
@@ -56,6 +60,7 @@ public class Psychologist implements Serializable {
     public Psychologist(String name, String crp, LocalDate birthDate, LocalDate activitiesStartDate, User user) {
         this.name = name;
         this.crp = crp;
+        this.about = about;
         this.birthDate = birthDate;
         this.activitiesStartDate = activitiesStartDate;
         this.user = user;

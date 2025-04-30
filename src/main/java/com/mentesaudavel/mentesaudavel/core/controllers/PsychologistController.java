@@ -30,7 +30,7 @@ public class PsychologistController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create-profile")
+    @PostMapping
     public ResponseEntity<AppResponse<PsychologistCreateResponseDTO>> createPsychologist(
             @RequestHeader("X-Access-Token") @NotNull String id,
             @RequestBody @Valid PsychologistCreateRequestDTO dto

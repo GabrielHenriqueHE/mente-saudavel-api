@@ -7,6 +7,7 @@ public record PsychologistCreateResponseDTO(
         UUID id,
         String name,
         String crp,
+        String about,
         LocalDate birthDate,
         LocalDate activitiesStartDate
 ) {

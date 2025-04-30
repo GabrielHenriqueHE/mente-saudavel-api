@@ -8,6 +8,7 @@ import com.mentesaudavel.mentesaudavel.core.exceptions.BadRequestException;
 import com.mentesaudavel.mentesaudavel.core.exceptions.UnprocessableEntityException;
 import com.mentesaudavel.mentesaudavel.core.mappers.PsychologistMapper;
 import com.mentesaudavel.mentesaudavel.core.repositories.PsychologistRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class PsychologistService {
     @Autowired
     private PsychologistRepository psychologistRepository;
 
+    @Transactional
     public PsychologistCreateResponseDTO createPsychologist(User user, PsychologistCreateRequestDTO dto) {
         if (user == null) {
             throw new BadRequestException("No user provided.");
@@ -49,6 +51,10 @@ public class PsychologistService {
                 dto.activitiesStartDate(),
                 user
         );
+
+        if (dto.about() != null) {
+            psychologist.setAbout(dto.about());
+        }
 
         var createdPsychologist = this.psychologistRepository.save(psychologist);
 
