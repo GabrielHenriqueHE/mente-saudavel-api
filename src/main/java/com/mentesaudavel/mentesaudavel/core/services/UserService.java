@@ -23,4 +23,13 @@ public class UserService {
                         )
                 );
     }
+
+    public User findUserByEmail(String email) {
+        return this.userRepository
+                .findByEmail(email)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException("User not found from email: "
+                                .concat(email))
+                );
+    }
 }
