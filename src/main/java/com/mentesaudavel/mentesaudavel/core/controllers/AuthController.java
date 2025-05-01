@@ -1,9 +1,10 @@
 package com.mentesaudavel.mentesaudavel.core.controllers;
 
+import com.mentesaudavel.mentesaudavel.core.dto.in.AuthenticationRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.UserCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.AppResponse;
 import com.mentesaudavel.mentesaudavel.core.dto.out.LinkResponseDTO;
-import com.mentesaudavel.mentesaudavel.core.dto.out.UserCreateResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.AuthenticationResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.helpers.LinkHelper;
 import com.mentesaudavel.mentesaudavel.core.services.AuthService;
 import jakarta.validation.Valid;
@@ -27,15 +28,15 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    private ResponseEntity<AppResponse<UserCreateResponseDTO>> registerUser(
+    public ResponseEntity<AppResponse<AuthenticationResponseDTO>> registerUser(
             @RequestBody @Valid UserCreateRequestDTO dto
     ) {
-        UserCreateResponseDTO serviceResponse = this.authService.registerUser(dto);
+        AuthenticationResponseDTO serviceResponse = this.authService.registerUser(dto);
 
         Map<String, LinkResponseDTO> links = new HashMap<>();
         links.put("psychologists", LinkHelper.link("/api/psychologists/create", HttpMethod.POST));
 
-        AppResponse<UserCreateResponseDTO> response = new AppResponse<>(
+        AppResponse<AuthenticationResponseDTO> response = new AppResponse<>(
                 HttpStatus.CREATED.value(),
                 "User created successfully",
                 serviceResponse,
@@ -44,4 +45,24 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<AppResponse<AuthenticationResponseDTO>> login(
+            @RequestBody @Valid AuthenticationRequestDTO dto
+    ) {
+        AuthenticationResponseDTO serviceResponse = this.authService.login(dto);
+
+        Map<String, LinkResponseDTO> links = new HashMap<>();
+        links.put("psychologists", LinkHelper.link("api/psychologists/create", HttpMethod.POST));
+
+        AppResponse<AuthenticationResponseDTO> response = new AppResponse<>(
+                HttpStatus.OK.value(),
+                "User authenticated successfully",
+                serviceResponse,
+                links
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }
