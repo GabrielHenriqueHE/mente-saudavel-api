@@ -1,11 +1,13 @@
 package com.mentesaudavel.mentesaudavel.infrastructure.security.constants;
 
-import java.util.List;
-
 public class Endpoints {
 
-    public static final List<String> PUBLIC_ENDPOINTS = List.of(
-            "/api/auth/register",
-            "/api/auth/login"
-    );
+    public static final String[] PUBLIC_POST_ENDPOINTS = {
+            "api/auth/register",
+            "api/auth/login"
+    };
+
+    public static final String[] PUBLIC_GET_ENDPOINTS = {
+            "api/root"
+    };
 }
