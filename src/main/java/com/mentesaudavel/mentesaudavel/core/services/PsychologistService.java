@@ -4,12 +4,13 @@ import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.entities.Psychologist;
 import com.mentesaudavel.mentesaudavel.core.entities.User;
-import com.mentesaudavel.mentesaudavel.core.exceptions.BadRequestException;
 import com.mentesaudavel.mentesaudavel.core.exceptions.UnprocessableEntityException;
 import com.mentesaudavel.mentesaudavel.core.mappers.PsychologistMapper;
 import com.mentesaudavel.mentesaudavel.core.repositories.PsychologistRepository;
+import com.mentesaudavel.mentesaudavel.core.security.implementations.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,10 +22,13 @@ public class PsychologistService {
     private PsychologistRepository psychologistRepository;
 
     @Transactional
-    public PsychologistCreateResponseDTO createPsychologist(User user, PsychologistCreateRequestDTO dto) {
-        if (user == null) {
-            throw new BadRequestException("No user provided.");
-        }
+    public PsychologistCreateResponseDTO createPsychologist(PsychologistCreateRequestDTO dto) {
+        UserDetailsImpl authenticatedUserDetails = (UserDetailsImpl) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = authenticatedUserDetails.getUser();
 
         var psychologistExists = this.psychologistRepository.findByUser(user);
 
@@ -42,7 +46,6 @@ public class PsychologistService {
         } else if (userIsUnderTwentyYearsOld) {
             throw new UnprocessableEntityException("Psychologist must be at least 20 years old.");
         }
-
 
         Psychologist psychologist = new Psychologist(
                 dto.name(),
