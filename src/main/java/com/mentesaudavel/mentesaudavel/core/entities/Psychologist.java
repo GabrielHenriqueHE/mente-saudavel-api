@@ -9,6 +9,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -49,6 +51,14 @@ public class Psychologist implements Serializable {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    @OneToMany(
+            mappedBy = "psychologist",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<Contact> contacts = new HashSet<>();
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -60,7 +70,6 @@ public class Psychologist implements Serializable {
     public Psychologist(String name, String crp, LocalDate birthDate, LocalDate activitiesStartDate, User user) {
         this.name = name;
         this.crp = crp;
-        this.about = about;
         this.birthDate = birthDate;
         this.activitiesStartDate = activitiesStartDate;
         this.user = user;
