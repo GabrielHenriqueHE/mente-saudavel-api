@@ -25,19 +25,21 @@ public class Contact implements Serializable {
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @EqualsAndHashCode.Include
     private UUID id;
 
     @Column(name = "description", nullable = false, length = 30)
     private String description;
 
     @Column(name = "email")
+    @EqualsAndHashCode.Include
     private String email;
 
     @Column(name = "phone_number", length = 20)
+    @EqualsAndHashCode.Include
     private String phoneNumber;
 
     @Column(name = "linkedin", length = 100)
+    @EqualsAndHashCode.Include
     private String linkedin;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
