@@ -59,6 +59,14 @@ public class Psychologist implements Serializable {
     )
     private Set<Contact> contacts = new HashSet<>();
 
+    @OneToMany(
+            mappedBy = "psychologist",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<Address> addresses = new HashSet<>();
+
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
