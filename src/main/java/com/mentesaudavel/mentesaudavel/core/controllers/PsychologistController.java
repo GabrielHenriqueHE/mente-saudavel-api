@@ -1,5 +1,6 @@
 package com.mentesaudavel.mentesaudavel.core.controllers;
 
+import com.mentesaudavel.mentesaudavel.core.dto.in.AddressListRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.ContactListRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.AppResponse;
@@ -70,4 +71,22 @@ public class PsychologistController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PostMapping("/addresses")
+    public ResponseEntity<AppResponse<Void>> addAddressesToPsychologist(
+            @RequestBody @Valid AddressListRequestDTO addressListRequest
+    ) {
+        this.psychologistService.addAddressesToAuthenticatedPsychologist(addressListRequest.addresses());
+
+        Map<String, LinkResponseDTO> links = new HashMap<>();
+        links.put("profile", LinkHelper.link("/api/profile", HttpMethod.GET));
+
+        AppResponse<Void> response = new AppResponse<>(
+                HttpStatus.OK.value(),
+                "Addresses added successfully",
+                null,
+                links
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);    }
 }

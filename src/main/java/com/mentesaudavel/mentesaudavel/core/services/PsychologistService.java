@@ -1,5 +1,6 @@
 package com.mentesaudavel.mentesaudavel.core.services;
 
+import com.mentesaudavel.mentesaudavel.core.dto.in.AddressCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.ContactCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
@@ -26,6 +27,9 @@ public class PsychologistService {
 
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private AddressService addressService;
 
     @Transactional
     public PsychologistCreateResponseDTO createPsychologist(PsychologistCreateRequestDTO dto) {
@@ -84,6 +88,24 @@ public class PsychologistService {
 
         var updatedContacts = this.contactService.registerContacts(psychologist, contacts);
         psychologist.setContacts(updatedContacts);
+
+        this.psychologistRepository.save(psychologist);
+    }
+
+    @Transactional
+    public void addAddressesToAuthenticatedPsychologist(List<AddressCreateRequestDTO> dto) {
+        UserDetailsImpl authenticatedUserDetails = (UserDetailsImpl) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = authenticatedUserDetails.getUser();
+
+        Psychologist psychologist = psychologistRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Psychologist profile not found."));
+
+        var updatedAddresses = this.addressService.registerAddresses(psychologist, dto);
+        psychologist.setAddresses(updatedAddresses);
 
         this.psychologistRepository.save(psychologist);
     }
