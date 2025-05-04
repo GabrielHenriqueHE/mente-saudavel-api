@@ -15,9 +15,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
-import static com.mentesaudavel.mentesaudavel.infrastructure.security.constants.Endpoints.PUBLIC_ENDPOINTS;
+import static com.mentesaudavel.mentesaudavel.infrastructure.security.constants.Endpoints.PUBLIC_GET_ENDPOINTS;
+import static com.mentesaudavel.mentesaudavel.infrastructure.security.constants.Endpoints.PUBLIC_POST_ENDPOINTS;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -33,7 +35,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if (PUBLIC_ENDPOINTS.contains(path)) {
+        if (List.of(PUBLIC_GET_ENDPOINTS).contains(path) || List.of(PUBLIC_POST_ENDPOINTS).contains(path)) {
             filterChain.doFilter(request, response);
             return;
         }
