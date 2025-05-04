@@ -81,4 +81,19 @@ public class ContactService {
 
         this.contactRepository.save(contact);
     }
+
+    public void deleteContact(UUID id) {
+        Contact contact = this.contactRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Contact register not found from ID: ".concat(String.valueOf(id))));
+
+        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User user = userDetailsImpl.getUser();
+
+        if (!contact.getPsychologist().getUser().getId().equals(user.getId())) {
+            throw new ForbiddenOperationException("You don't own this contact.");
+        }
+
+        this.contactRepository.delete(contact);
+    }
 }

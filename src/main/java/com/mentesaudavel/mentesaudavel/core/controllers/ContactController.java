@@ -36,4 +36,13 @@ public class ContactController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteContact(
+            @PathVariable UUID id
+    ) {
+        this.contactService.deleteContact(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
