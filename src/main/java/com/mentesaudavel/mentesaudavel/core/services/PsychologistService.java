@@ -1,9 +1,11 @@
 package com.mentesaudavel.mentesaudavel.core.services;
 
+import com.mentesaudavel.mentesaudavel.core.dto.in.ContactCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.entities.Psychologist;
 import com.mentesaudavel.mentesaudavel.core.entities.User;
+import com.mentesaudavel.mentesaudavel.core.exceptions.ResourceNotFoundException;
 import com.mentesaudavel.mentesaudavel.core.exceptions.UnprocessableEntityException;
 import com.mentesaudavel.mentesaudavel.core.mappers.PsychologistMapper;
 import com.mentesaudavel.mentesaudavel.core.repositories.PsychologistRepository;
@@ -14,12 +16,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class PsychologistService {
 
     @Autowired
     private PsychologistRepository psychologistRepository;
+
+    @Autowired
+    private ContactService contactService;
 
     @Transactional
     public PsychologistCreateResponseDTO createPsychologist(PsychologistCreateRequestDTO dto) {
@@ -62,5 +68,23 @@ public class PsychologistService {
         var createdPsychologist = this.psychologistRepository.save(psychologist);
 
         return PsychologistMapper.entityToDTO(createdPsychologist);
+    }
+
+    @Transactional
+    public void addContactsToAuthenticatedPsychologist(List<ContactCreateRequestDTO> contacts) {
+        UserDetailsImpl authenticatedUserDetails = (UserDetailsImpl) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = authenticatedUserDetails.getUser();
+
+        Psychologist psychologist = psychologistRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Psychologist profile not found."));
+
+        var updatedContacts = this.contactService.registerContacts(psychologist, contacts);
+        psychologist.setContacts(updatedContacts);
+
+        this.psychologistRepository.save(psychologist);
     }
 }
