@@ -7,6 +7,7 @@ import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistUpdateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.AppResponse;
 import com.mentesaudavel.mentesaudavel.core.dto.out.LinkResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistGetResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.helpers.LinkHelper;
 import com.mentesaudavel.mentesaudavel.core.services.PsychologistService;
 import com.mentesaudavel.mentesaudavel.core.services.PsychologistSpecialtyService;
@@ -132,4 +133,6 @@ public class PsychologistController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+
 }
