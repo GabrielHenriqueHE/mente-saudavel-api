@@ -1,6 +1,7 @@
 package com.mentesaudavel.mentesaudavel.core.entities;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @Table(name = "tb_specialties")
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Specialty implements Serializable {
 
     @Serial
@@ -23,7 +25,8 @@ public class Specialty implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 50)
+    @EqualsAndHashCode.Include
+    @Column(name = "name", unique = true, length = 50)
     private String name;
 
     @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
