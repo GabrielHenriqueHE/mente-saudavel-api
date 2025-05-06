@@ -8,16 +8,14 @@ import com.mentesaudavel.mentesaudavel.core.dto.out.LinkResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.helpers.LinkHelper;
 import com.mentesaudavel.mentesaudavel.core.services.PsychologistService;
+import com.mentesaudavel.mentesaudavel.core.services.PsychologistSpecialtyService;
 import com.mentesaudavel.mentesaudavel.core.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +29,9 @@ public class PsychologistController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PsychologistSpecialtyService psychologistSpecialtyService;
 
     @PostMapping
     public ResponseEntity<AppResponse<PsychologistCreateResponseDTO>> createPsychologist(
@@ -88,5 +89,31 @@ public class PsychologistController {
                 links
         );
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);    }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/specialties/{specialtyId}")
+    public ResponseEntity<AppResponse<Void>> linkPsychologistToSpecialty(
+            @PathVariable Long specialtyId
+    ) {
+        this.psychologistSpecialtyService.linkPsychologistToSpecialty(specialtyId);
+
+        AppResponse<Void> response = new AppResponse<>(
+                HttpStatus.OK.value(),
+                "Specialty successfully linked to psychologist profile.",
+                null,
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/specialties/{specialtyId}")
+    public ResponseEntity<AppResponse<Void>> unlinkPsychologistFromSpecialty(
+            @PathVariable Long specialtyId
+    ) {
+        this.psychologistSpecialtyService.unlinkPsychologistFromSpecialty(specialtyId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
