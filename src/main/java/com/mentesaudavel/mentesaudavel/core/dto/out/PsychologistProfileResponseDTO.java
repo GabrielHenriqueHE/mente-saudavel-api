@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record PsychologistGetResponseDTO(
+public record PsychologistProfileResponseDTO(
     UUID id,
     String name,
     String crp,

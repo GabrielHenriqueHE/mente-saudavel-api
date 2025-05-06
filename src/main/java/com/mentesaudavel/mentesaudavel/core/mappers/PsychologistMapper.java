@@ -1,18 +1,20 @@
 package com.mentesaudavel.mentesaudavel.core.mappers;
 
-import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistProfileResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.entities.Psychologist;
 
 public class PsychologistMapper {
 
-    public static PsychologistCreateResponseDTO entityToDTO(Psychologist psychologist) {
-        return new PsychologistCreateResponseDTO(
+    public static PsychologistProfileResponseDTO entityToDTO(Psychologist psychologist) {
+        return new PsychologistProfileResponseDTO(
                 psychologist.getId(),
                 psychologist.getName(),
                 psychologist.getCrp(),
-                psychologist.getAbout(),
                 psychologist.getBirthDate(),
-                psychologist.getActivitiesStartDate()
+                psychologist.getActivitiesStartDate(),
+                psychologist.getAbout(),
+                psychologist.getCreatedAt(),
+                psychologist.getUpdatedAt()
         );
     }
 }

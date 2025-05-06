@@ -6,8 +6,7 @@ import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistUpdateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.AppResponse;
 import com.mentesaudavel.mentesaudavel.core.dto.out.LinkResponseDTO;
-import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
-import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistGetResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistProfileResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.helpers.LinkHelper;
 import com.mentesaudavel.mentesaudavel.core.services.PsychologistService;
 import com.mentesaudavel.mentesaudavel.core.services.PsychologistSpecialtyService;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/psychologists")
@@ -36,7 +36,7 @@ public class PsychologistController {
     private PsychologistSpecialtyService psychologistSpecialtyService;
 
     @PostMapping
-    public ResponseEntity<AppResponse<PsychologistCreateResponseDTO>> createPsychologist(
+    public ResponseEntity<AppResponse<PsychologistProfileResponseDTO>> createPsychologist(
             @RequestBody @Valid PsychologistCreateRequestDTO dto
     ) {
         var serviceResponse = this.psychologistService.createPsychologist(dto);
@@ -45,7 +45,7 @@ public class PsychologistController {
         links.put("index", LinkHelper.link("/", HttpMethod.GET));
         links.put("profile", LinkHelper.link("api/profile", HttpMethod.GET));
 
-        AppResponse<PsychologistCreateResponseDTO> response = new AppResponse<>(
+        AppResponse<PsychologistProfileResponseDTO> response = new AppResponse<>(
                 HttpStatus.CREATED.value(),
                 "Psychologist profile created successfully",
                 serviceResponse,
@@ -134,5 +134,19 @@ public class PsychologistController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<AppResponse<PsychologistProfileResponseDTO>> getPsychologistDataFromId(
+            @PathVariable UUID id
+    ) {
+        PsychologistProfileResponseDTO serviceResponse = this.psychologistService.getPsychologistDataFromId(id);
 
+        AppResponse<PsychologistProfileResponseDTO> response = new AppResponse<>(
+                HttpStatus.OK.value(),
+                null,
+                serviceResponse,
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 }

@@ -4,7 +4,7 @@ import com.mentesaudavel.mentesaudavel.core.dto.in.AddressCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.ContactCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistUpdateRequestDTO;
-import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistProfileResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.entities.Psychologist;
 import com.mentesaudavel.mentesaudavel.core.entities.User;
 import com.mentesaudavel.mentesaudavel.core.exceptions.ResourceNotFoundException;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PsychologistService {
@@ -33,7 +34,7 @@ public class PsychologistService {
     private AddressService addressService;
 
     @Transactional
-    public PsychologistCreateResponseDTO createPsychologist(PsychologistCreateRequestDTO dto) {
+    public PsychologistProfileResponseDTO createPsychologist(PsychologistCreateRequestDTO dto) {
         UserDetailsImpl authenticatedUserDetails = (UserDetailsImpl) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -164,5 +165,12 @@ public class PsychologistService {
         if (activitiesStartDate.isBefore(birthDate.plusYears(20))) {
             throw new UnprocessableEntityException("Must be at least 20 years old to act as a psychologist.");
         }
+    }
+
+    public PsychologistProfileResponseDTO getPsychologistDataFromId(UUID id) {
+        Psychologist psychologist = this.psychologistRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Psychologist profile not found from ID."));
+
+        return PsychologistMapper.entityToDTO(psychologist);
     }
 }
