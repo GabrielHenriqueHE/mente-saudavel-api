@@ -43,8 +43,7 @@ public class Psychologist implements Serializable {
     @Column(name = "activities_start_date", nullable = false)
     private LocalDate activitiesStartDate;
 
-    @Column(name = "about")
-    @Lob
+    @Column(name = "about", length = 2600)
     private String about;
 
     @OneToOne(fetch = FetchType.LAZY)

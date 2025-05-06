@@ -3,6 +3,7 @@ package com.mentesaudavel.mentesaudavel.core.services;
 import com.mentesaudavel.mentesaudavel.core.dto.in.AddressCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.ContactCreateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistUpdateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.entities.Psychologist;
 import com.mentesaudavel.mentesaudavel.core.entities.User;
@@ -46,16 +47,8 @@ public class PsychologistService {
             throw new UnprocessableEntityException("User already has a psychologist profile.");
         }
 
-        LocalDate now = LocalDate.now();
-        boolean userIsUnderTwentyYearsOld = dto.birthDate().isAfter(now.minusYears(20));
-
-        if (dto.birthDate().isAfter(now)) {
-            throw new UnprocessableEntityException("Birth date cannot be in the future.");
-        } else if (dto.birthDate().isBefore(now.minusYears(100))) {
-            throw new UnprocessableEntityException("Birth date is too old.");
-        } else if (userIsUnderTwentyYearsOld) {
-            throw new UnprocessableEntityException("Psychologist must be at least 20 years old.");
-        }
+        this.validateBirthDate(dto.birthDate());
+        this.validateActivitiesStartDate(dto.activitiesStartDate(), dto.birthDate());
 
         Psychologist psychologist = new Psychologist(
                 dto.name(),
@@ -108,5 +101,68 @@ public class PsychologistService {
         psychologist.setAddresses(updatedAddresses);
 
         this.psychologistRepository.save(psychologist);
+    }
+
+    public void updatePsychologist(PsychologistUpdateRequestDTO dto) {
+        UserDetailsImpl authenticatedUserDetails = (UserDetailsImpl) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = authenticatedUserDetails.getUser();
+
+        Psychologist psychologist = this.psychologistRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Psychologist not found from authenticated user."));
+
+        if (dto.name() != null && !dto.name().isBlank()) {
+            psychologist.setName(dto.name());
+        }
+
+        if (dto.crp() != null && !dto.crp().isBlank()) {
+            psychologist.setCrp(dto.crp());
+        }
+
+        if (dto.birthDate() != null) {
+            this.validateBirthDate(dto.birthDate());
+
+            psychologist.setBirthDate(dto.birthDate());
+        }
+
+        LocalDate birthDate = dto.birthDate() != null ? dto.birthDate() : psychologist.getBirthDate();
+
+        if (dto.activitiesStartDate() != null) {
+            this.validateActivitiesStartDate(dto.activitiesStartDate(), birthDate);
+        }
+
+        if (dto.about() != null) {
+            psychologist.setAbout(dto.about());
+        }
+
+        this.psychologistRepository.save(psychologist);
+    }
+
+    private void validateBirthDate(LocalDate date) {
+        LocalDate now = LocalDate.now();
+        boolean userIsUnderTwentyYearsOld = date.isAfter(now.minusYears(20));
+
+        if (date.isAfter(now)) {
+            throw new UnprocessableEntityException("Birth date cannot be in the future.");
+        } else if (date.isBefore(now.minusYears(100))) {
+            throw new UnprocessableEntityException("Birth date is too old.");
+        } else if (userIsUnderTwentyYearsOld) {
+            throw new UnprocessableEntityException("Psychologist must be at least 20 years old.");
+        }
+    }
+
+    private void validateActivitiesStartDate(LocalDate activitiesStartDate, LocalDate birthDate) {
+        LocalDate now = LocalDate.now();
+
+        if (activitiesStartDate.isAfter(now)) {
+            throw new UnprocessableEntityException("Activities start date cannot be in the future.");
+        }
+
+        if (activitiesStartDate.isBefore(birthDate.plusYears(20))) {
+            throw new UnprocessableEntityException("Must be at least 20 years old to act as a psychologist.");
+        }
     }
 }

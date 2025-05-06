@@ -3,6 +3,7 @@ package com.mentesaudavel.mentesaudavel.core.controllers;
 import com.mentesaudavel.mentesaudavel.core.dto.in.AddressListRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.ContactListRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistCreateRequestDTO;
+import com.mentesaudavel.mentesaudavel.core.dto.in.PsychologistUpdateRequestDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.AppResponse;
 import com.mentesaudavel.mentesaudavel.core.dto.out.LinkResponseDTO;
 import com.mentesaudavel.mentesaudavel.core.dto.out.PsychologistCreateResponseDTO;
@@ -53,6 +54,21 @@ public class PsychologistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PutMapping
+    public ResponseEntity<AppResponse<Void>> updatePsychologist(
+            @RequestBody PsychologistUpdateRequestDTO dto
+            ) {
+        this.psychologistService.updatePsychologist(dto);
+
+        AppResponse<Void> response = new AppResponse<>(
+                HttpStatus.OK.value(),
+                "Psychologist data updated successfully",
+                null,
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
     @PostMapping("/contacts")
     public ResponseEntity<AppResponse<Void>> addContactsToPsychologist(
