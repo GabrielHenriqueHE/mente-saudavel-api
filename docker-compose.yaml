@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: mente-saudavel-postgres
+    restart: always
+    env_file: ".env"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_USER}
+    ports:
+      - "5432:5432"
+    networks:
+      - mente-saudavel-network
+    volumes:
+      - mente-saudavel-data
+
+  pgadmin:
+    image: elestio/pgadmin:latest
+    container_name: mente-saudavel-pgadmin
+    restart: always
+    env_file: ".env"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "10000:80"
+    depends_on:
+      - postgres
+    networks:
+      - mente-saudavel-network
+
+networks:
+  mente-saudavel-network:
+
+volumes:
+  mente-saudavel-data:
