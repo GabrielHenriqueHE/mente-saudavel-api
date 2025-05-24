@@ -39,22 +39,6 @@ public class PsychologistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping
-    public ResponseEntity<ApplicationResponseDTO<Void>> updatePsychologist(
-            @Valid @RequestBody UpdatePsychologistRequestDTO data
-    ) {
-        User user = AuthenticationHelper.getAuthenticatedUser();
-        this.updatePsychologistService.execute(user, data);
-
-        ApplicationResponseDTO<Void> response = ApplicationResponseDTO
-                .<Void>builder()
-                .status(HttpStatus.OK.value())
-                .message("Psychologist profile updated successfully")
-                .build();
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
     @DeleteMapping
     public ResponseEntity<ApplicationResponseDTO<Void>> deletePsychologist() {
         User user = AuthenticationHelper.getAuthenticatedUser();
