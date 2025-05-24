@@ -3,6 +3,7 @@ package br.app.mentesaudavel.api.modules.psychologist.application.controllers;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.CreatePsychologistRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.UpdatePsychologistRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.CreatePsychologistService;
+import br.app.mentesaudavel.api.modules.psychologist.application.services.DeletePsychologistService;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.UpdatePsychologistService;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class PsychologistController {
 
     private final CreatePsychologistService createPsychologistService;
+    private final DeletePsychologistService deletePsychologistService;
     private final UpdatePsychologistService updatePsychologistService;
 
     @PostMapping
@@ -51,5 +53,14 @@ public class PsychologistController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ApplicationResponseDTO<Void>> deletePsychologist() {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+
+        this.deletePsychologistService.execute(user);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
