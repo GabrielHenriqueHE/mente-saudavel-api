@@ -45,6 +45,9 @@ public class Psychologist implements Serializable {
     @Column(name = "about", length = 2600)
     private String about;
 
+    @Column(name = "profilePicture")
+    private String profilePicture;
+
     @Column(name = "slug", unique = true, length = 50)
     private String slug;
 
@@ -65,6 +68,8 @@ public class Psychologist implements Serializable {
             String crp,
             LocalDate birthDate,
             LocalDate activitiesStartDate,
+            String about,
+            String profilePicture,
             String slug,
             User user
     ) {
@@ -72,6 +77,8 @@ public class Psychologist implements Serializable {
         this.crp = crp;
         this.birthDate = birthDate;
         this.activitiesStartDate = activitiesStartDate;
+        this.about = about;
+        this.profilePicture = profilePicture;
         this.slug = slug;
         this.user = user;
     }

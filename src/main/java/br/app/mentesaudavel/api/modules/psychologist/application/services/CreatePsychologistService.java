@@ -62,6 +62,8 @@ public class CreatePsychologistService {
                 data.crp(),
                 data.birthDate(),
                 data.activitiesStartDate(),
+                data.about(),
+                data.profilePicture(),
                 data.slug(),
                 user
         );
