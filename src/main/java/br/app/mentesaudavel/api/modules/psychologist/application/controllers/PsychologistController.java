@@ -1,7 +1,6 @@
 package br.app.mentesaudavel.api.modules.psychologist.application.controllers;
 
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.CreatePsychologistRequestDTO;
-import br.app.mentesaudavel.api.modules.psychologist.application.data.request.UpdatePsychologistRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.CreatePsychologistService;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.DeletePsychologistService;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.UpdatePsychologistService;
@@ -37,14 +36,5 @@ public class PsychologistController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<ApplicationResponseDTO<Void>> deletePsychologist() {
-        User user = AuthenticationHelper.getAuthenticatedUser();
-
-        this.deletePsychologistService.execute(user);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

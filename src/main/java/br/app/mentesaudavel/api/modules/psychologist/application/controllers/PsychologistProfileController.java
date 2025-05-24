@@ -1,6 +1,7 @@
 package br.app.mentesaudavel.api.modules.psychologist.application.controllers;
 
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.UpdatePsychologistRequestDTO;
+import br.app.mentesaudavel.api.modules.psychologist.application.services.DeletePsychologistService;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.UpdatePsychologistService;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
@@ -9,16 +10,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/psychologists/profile")
 @RequiredArgsConstructor
 public class PsychologistProfileController {
 
+    private final DeletePsychologistService deletePsychologistService;
     private final UpdatePsychologistService updatePsychologistService;
 
     @PutMapping
@@ -35,5 +34,14 @@ public class PsychologistProfileController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ApplicationResponseDTO<Void>> deletePsychologist() {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+
+        this.deletePsychologistService.execute(user);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
