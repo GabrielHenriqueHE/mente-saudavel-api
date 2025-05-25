@@ -2,8 +2,10 @@ package br.app.mentesaudavel.api.modules.psychologist.application.controllers;
 
 import br.app.mentesaudavel.api.modules.address.application.data.request.CreateAddressRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.UpdatePsychologistRequestDTO;
+import br.app.mentesaudavel.api.modules.psychologist.application.data.response.PsychologistProfileDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.CreatePsychologistAddressService;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.DeletePsychologistService;
+import br.app.mentesaudavel.api.modules.psychologist.application.services.GetPsychologistProfileService;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.UpdatePsychologistService;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
@@ -21,7 +23,24 @@ public class PsychologistProfileController {
 
     private final CreatePsychologistAddressService createPsychologistAddressService;
     private final DeletePsychologistService deletePsychologistService;
+    private final GetPsychologistProfileService getPsychologistProfileService;
     private final UpdatePsychologistService updatePsychologistService;
+
+    @GetMapping
+    public ResponseEntity<ApplicationResponseDTO<PsychologistProfileDTO>> getPsychologistProfile() {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+
+        PsychologistProfileDTO serviceResponse = this.getPsychologistProfileService.execute(user);
+
+        ApplicationResponseDTO<PsychologistProfileDTO> response = ApplicationResponseDTO
+                .<PsychologistProfileDTO>builder()
+                .status(HttpStatus.OK.value())
+                .message("Psychologist profile located successfully")
+                .details(serviceResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
     @PutMapping
     public ResponseEntity<ApplicationResponseDTO<Void>> updatePsychologist(
