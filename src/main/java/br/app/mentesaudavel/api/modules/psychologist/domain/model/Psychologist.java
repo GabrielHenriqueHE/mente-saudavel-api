@@ -1,5 +1,6 @@
 package br.app.mentesaudavel.api.modules.psychologist.domain.model;
 
+import br.app.mentesaudavel.api.modules.address.domain.model.Address;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,6 +11,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -54,6 +57,14 @@ public class Psychologist implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @OneToMany(
+            mappedBy = "psychologist",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<Address> addresses = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
