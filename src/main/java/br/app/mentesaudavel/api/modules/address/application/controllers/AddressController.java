@@ -1,6 +1,7 @@
 package br.app.mentesaudavel.api.modules.address.application.controllers;
 
 import br.app.mentesaudavel.api.modules.address.application.data.request.UpdateAddressRequestDTO;
+import br.app.mentesaudavel.api.modules.address.application.services.DeleteAddressService;
 import br.app.mentesaudavel.api.modules.address.application.services.UpdateAddressService;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AddressController {
 
+    private final DeleteAddressService deleteAddressService;
     private final UpdateAddressService updateAddressService;
 
     @PutMapping("/{id}")
@@ -35,5 +37,16 @@ public class AddressController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAddress(
+            @PathVariable("id") String id
+    ) {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+
+        this.deleteAddressService.execute(user, UUID.fromString(id));
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
