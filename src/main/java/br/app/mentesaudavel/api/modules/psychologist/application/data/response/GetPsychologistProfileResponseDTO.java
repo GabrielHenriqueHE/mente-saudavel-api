@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record PsychologistProfileDTO(
+public record GetPsychologistProfileResponseDTO(
         @JsonProperty("id")
         UUID id,
 
