@@ -1,7 +1,7 @@
 package br.app.mentesaudavel.api.shared.handlers;
 
-import br.app.mentesaudavel.api.shared.dto.ApplicationResponseDTO;
-import br.app.mentesaudavel.api.shared.dto.ErrorDetailsDTO;
+import br.app.mentesaudavel.api.shared.data.response.ApplicationResponseDTO;
+import br.app.mentesaudavel.api.shared.data.response.ErrorDetailsDTO;
 import br.app.mentesaudavel.api.shared.exceptions.BaseApplicationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

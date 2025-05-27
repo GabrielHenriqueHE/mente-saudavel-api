@@ -1,4 +1,4 @@
-package br.app.mentesaudavel.api.shared.dto;
+package br.app.mentesaudavel.api.shared.data.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

@@ -5,7 +5,7 @@ import br.app.mentesaudavel.api.modules.authentication.application.data.request.
 import br.app.mentesaudavel.api.modules.authentication.application.data.response.AuthenticationResponseDTO;
 import br.app.mentesaudavel.api.modules.authentication.application.services.AuthenticateUserService;
 import br.app.mentesaudavel.api.modules.authentication.application.services.RegisterUserService;
-import br.app.mentesaudavel.api.shared.dto.ApplicationResponseDTO;
+import br.app.mentesaudavel.api.shared.data.response.ApplicationResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

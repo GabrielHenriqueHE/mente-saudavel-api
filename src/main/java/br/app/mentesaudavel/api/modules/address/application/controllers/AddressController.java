@@ -5,7 +5,7 @@ import br.app.mentesaudavel.api.modules.address.application.services.DeleteAddre
 import br.app.mentesaudavel.api.modules.address.application.services.UpdateAddressService;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
-import br.app.mentesaudavel.api.shared.dto.ApplicationResponseDTO;
+import br.app.mentesaudavel.api.shared.data.response.ApplicationResponseDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
