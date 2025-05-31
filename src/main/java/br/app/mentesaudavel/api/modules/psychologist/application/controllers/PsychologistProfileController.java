@@ -6,6 +6,9 @@ import br.app.mentesaudavel.api.modules.psychologist.application.data.request.Up
 import br.app.mentesaudavel.api.modules.psychologist.application.data.response.GetPsychologistProfileResponseDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.*;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
+import br.app.mentesaudavel.api.modules.specialization.application.data.request.LinkSpecializationToPsychologistRequestDTO;
+import br.app.mentesaudavel.api.modules.specialization.application.data.response.LinkSpecializationToPsychologistResponseDTO;
+import br.app.mentesaudavel.api.modules.specialization.application.services.LinkSpecializationToPsychologistService;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
 import br.app.mentesaudavel.api.shared.data.response.ApplicationResponseDTO;
 import jakarta.validation.Valid;
@@ -23,6 +26,7 @@ public class PsychologistProfileController {
     private final CreatePsychologistContactService createPsychologistContactService;
     private final DeletePsychologistService deletePsychologistService;
     private final GetPsychologistProfileService getPsychologistProfileService;
+    private final LinkSpecializationToPsychologistService linkSpecializationToPsychologistService;
     private final UpdatePsychologistService updatePsychologistService;
 
     @GetMapping
@@ -93,6 +97,24 @@ public class PsychologistProfileController {
                 .<Void>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("Psychologist contact created successfully.")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/specializations")
+    public ResponseEntity<ApplicationResponseDTO<LinkSpecializationToPsychologistResponseDTO>> linkSpecializationToPsychologist(
+            @Valid @RequestBody LinkSpecializationToPsychologistRequestDTO data
+    ) {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+
+        LinkSpecializationToPsychologistResponseDTO serviceResponse = this.linkSpecializationToPsychologistService.execute(user, data);
+
+        ApplicationResponseDTO<LinkSpecializationToPsychologistResponseDTO> response = ApplicationResponseDTO
+                .<LinkSpecializationToPsychologistResponseDTO>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Specializations linked successfully.")
+                .details(serviceResponse)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
