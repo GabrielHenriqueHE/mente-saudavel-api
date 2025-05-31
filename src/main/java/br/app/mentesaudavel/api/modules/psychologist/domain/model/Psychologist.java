@@ -1,6 +1,7 @@
 package br.app.mentesaudavel.api.modules.psychologist.domain.model;
 
 import br.app.mentesaudavel.api.modules.address.domain.model.Address;
+import br.app.mentesaudavel.api.modules.contact.domain.model.Contact;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -65,6 +66,14 @@ public class Psychologist implements Serializable {
             fetch = FetchType.LAZY
     )
     private Set<Address> addresses = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "psychologist",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private Set<Contact> contacts = new HashSet<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
