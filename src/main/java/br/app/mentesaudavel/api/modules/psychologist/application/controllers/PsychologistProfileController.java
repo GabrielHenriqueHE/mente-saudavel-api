@@ -9,6 +9,7 @@ import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.specialization.application.data.request.LinkSpecializationToPsychologistRequestDTO;
 import br.app.mentesaudavel.api.modules.specialization.application.data.response.LinkSpecializationToPsychologistResponseDTO;
 import br.app.mentesaudavel.api.modules.specialization.application.services.LinkSpecializationToPsychologistService;
+import br.app.mentesaudavel.api.modules.specialization.application.services.UnlinkSpecializationFromPsychologistService;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
 import br.app.mentesaudavel.api.shared.data.response.ApplicationResponseDTO;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ public class PsychologistProfileController {
     private final DeletePsychologistService deletePsychologistService;
     private final GetPsychologistProfileService getPsychologistProfileService;
     private final LinkSpecializationToPsychologistService linkSpecializationToPsychologistService;
+    private final UnlinkSpecializationFromPsychologistService unlinkSpecializationFromPsychologistService;
     private final UpdatePsychologistService updatePsychologistService;
 
     @GetMapping
@@ -118,5 +120,16 @@ public class PsychologistProfileController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("/specializations/{id}")
+    public ResponseEntity<Void> unlinkSpecializationFromPsychologist(
+            @PathVariable("id") Long id
+    ) {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+
+        this.unlinkSpecializationFromPsychologistService.execute(user, id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
