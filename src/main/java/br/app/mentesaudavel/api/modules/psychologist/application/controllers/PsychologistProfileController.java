@@ -1,12 +1,10 @@
 package br.app.mentesaudavel.api.modules.psychologist.application.controllers;
 
 import br.app.mentesaudavel.api.modules.address.application.data.request.CreateAddressRequestDTO;
+import br.app.mentesaudavel.api.modules.contact.application.data.request.CreateContactRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.UpdatePsychologistRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.response.GetPsychologistProfileResponseDTO;
-import br.app.mentesaudavel.api.modules.psychologist.application.services.CreatePsychologistAddressService;
-import br.app.mentesaudavel.api.modules.psychologist.application.services.DeletePsychologistService;
-import br.app.mentesaudavel.api.modules.psychologist.application.services.GetPsychologistProfileService;
-import br.app.mentesaudavel.api.modules.psychologist.application.services.UpdatePsychologistService;
+import br.app.mentesaudavel.api.modules.psychologist.application.services.*;
 import br.app.mentesaudavel.api.modules.security.helpers.AuthenticationHelper;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
 import br.app.mentesaudavel.api.shared.data.response.ApplicationResponseDTO;
@@ -22,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class PsychologistProfileController {
 
     private final CreatePsychologistAddressService createPsychologistAddressService;
+    private final CreatePsychologistContactService createPsychologistContactService;
     private final DeletePsychologistService deletePsychologistService;
     private final GetPsychologistProfileService getPsychologistProfileService;
     private final UpdatePsychologistService updatePsychologistService;
@@ -78,6 +77,22 @@ public class PsychologistProfileController {
                 .<Void>builder()
                 .status(HttpStatus.CREATED.value())
                 .message("Psychologist address created succesfully.")
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/contacts")
+    public ResponseEntity<ApplicationResponseDTO<Void>> createPsychologistContact(
+            @Valid @RequestBody CreateContactRequestDTO data
+    ) {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+        this.createPsychologistContactService.execute(user, data);
+
+        ApplicationResponseDTO<Void> response = ApplicationResponseDTO
+                .<Void>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Psychologist contact created successfully.")
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
