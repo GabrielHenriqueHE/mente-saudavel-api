@@ -1,11 +1,11 @@
 package br.app.mentesaudavel.api.modules.psychologist.application.controllers;
 
-import br.app.mentesaudavel.api.modules.address.application.controllers.AddressController;
 import br.app.mentesaudavel.api.modules.address.application.data.request.CreateAddressRequestDTO;
 import br.app.mentesaudavel.api.modules.address.application.data.response.GetAddressResponseDTO;
 import br.app.mentesaudavel.api.modules.address.application.services.GetAuthenticatedPsychologistAddressesService;
-import br.app.mentesaudavel.api.modules.address.domain.model.Address;
 import br.app.mentesaudavel.api.modules.contact.application.data.request.CreateContactRequestDTO;
+import br.app.mentesaudavel.api.modules.contact.application.data.response.GetContactResponseDTO;
+import br.app.mentesaudavel.api.modules.contact.application.services.GetAuthenticatedPsychologistContactsService;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.request.UpdatePsychologistRequestDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.data.response.GetPsychologistProfileResponseDTO;
 import br.app.mentesaudavel.api.modules.psychologist.application.services.*;
@@ -25,7 +25,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("api/psychologists/profile")
@@ -37,6 +38,7 @@ public class PsychologistProfileController {
     private final DeletePsychologistService deletePsychologistService;
     private final GetAuthenticatedPsychologistProfileService getAuthenticatedPsychologistProfileService;
     private final GetAuthenticatedPsychologistAddressesService getAuthenticatedPsychologistAddressesService;
+    private final GetAuthenticatedPsychologistContactsService getAuthenticatedPsychologistContactsService;
     private final LinkSpecializationToPsychologistService linkSpecializationToPsychologistService;
     private final UnlinkSpecializationFromPsychologistService unlinkSpecializationFromPsychologistService;
     private final UpdatePsychologistService updatePsychologistService;
@@ -48,7 +50,8 @@ public class PsychologistProfileController {
         GetPsychologistProfileResponseDTO serviceResponse = this.getAuthenticatedPsychologistProfileService.execute(user);
 
         RepresentationModel<?> references = new RepresentationModel<>();
-        references.add(linkTo(methodOn(this.getClass()).getPsychologistAddresses()).withSelfRel());
+        references.add(linkTo(methodOn(this.getClass()).getAuthenticatedPsychologistAddresses()).withRel("addresses"));
+        references.add(linkTo(methodOn(this.getClass()).getAuthenticatedPsychologistContacts()).withRel("contacts"));
 
         ApplicationResponseDTO<GetPsychologistProfileResponseDTO> response = ApplicationResponseDTO
                 .<GetPsychologistProfileResponseDTO>builder()
@@ -103,7 +106,7 @@ public class PsychologistProfileController {
     }
 
     @GetMapping("/addresses")
-    public ResponseEntity<ApplicationResponseDTO<List<GetAddressResponseDTO>>> getPsychologistAddresses() {
+    public ResponseEntity<ApplicationResponseDTO<List<GetAddressResponseDTO>>> getAuthenticatedPsychologistAddresses() {
         User user = AuthenticationHelper.getAuthenticatedUser();
         List<GetAddressResponseDTO> serviceResponse = this.getAuthenticatedPsychologistAddressesService.execute(user);
 
@@ -131,6 +134,21 @@ public class PsychologistProfileController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/contacts")
+    public ResponseEntity<ApplicationResponseDTO<List<GetContactResponseDTO>>> getAuthenticatedPsychologistContacts() {
+        User user = AuthenticationHelper.getAuthenticatedUser();
+        List<GetContactResponseDTO> serviceResponse = this.getAuthenticatedPsychologistContactsService.execute(user);
+
+        ApplicationResponseDTO<List<GetContactResponseDTO>> response = ApplicationResponseDTO
+                .<List<GetContactResponseDTO>>builder()
+                .status(HttpStatus.OK.value())
+                .message("Psychologist contacts located succesfully.")
+                .details(serviceResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/specializations")
