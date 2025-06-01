@@ -1,25 +1,31 @@
-package br.app.mentesaudavel.api.modules.psychologist.application.services;
+package br.app.mentesaudavel.api.modules.address.application.services;
 
-import br.app.mentesaudavel.api.modules.psychologist.application.data.response.GetPsychologistProfileResponseDTO;
+import br.app.mentesaudavel.api.modules.address.application.data.response.GetAddressResponseDTO;
+import br.app.mentesaudavel.api.modules.address.repositories.AddressRepository;
 import br.app.mentesaudavel.api.modules.psychologist.domain.model.Psychologist;
-import br.app.mentesaudavel.api.modules.psychologist.mappers.PsychologistMapper;
 import br.app.mentesaudavel.api.modules.psychologist.repositories.PsychologistRepository;
 import br.app.mentesaudavel.api.modules.user.domain.model.User;
 import br.app.mentesaudavel.api.shared.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class GetPsychologistProfileService {
+public class GetAuthenticatedPsychologistAddressesService {
 
+    private final AddressRepository addressRepository;
     private final PsychologistRepository psychologistRepository;
 
-    public GetPsychologistProfileResponseDTO execute(User user) {
+    public List<GetAddressResponseDTO> execute(User user) {
         Psychologist psychologist = this.psychologistRepository
                 .findByUser(user)
                 .orElseThrow(() -> new ResourceNotFoundException("Psychologist profile not found.", null));
 
-        return PsychologistMapper.mapToDTO(psychologist);
+        return this.addressRepository
+                .findAllByPsychologist(psychologist)
+                .stream()
+                .map(GetAddressResponseDTO::mapToDTO).toList();
     }
 }
